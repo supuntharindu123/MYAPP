@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MyApp</title>
+    <link rel="stylesheet" href="/style.css" type="text/css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body>
+    <%- include('header') %>
+
+    <div class="background-my d-flex p-5">
+      <div class="container">
+        <% errors.forEach(function(msg){ %>
+        <div class="alert alert-danger text-center"><%= msg %></div>
+        <% }) %> <% success.forEach(function(msg){ %>
+        <div class="alert alert-success text-center"><%= msg %></div>
+        <% }) %>
+        <div class="row mb-4 mt-5">
+          <div class="col-12 col-md-8 text-center">
+            <% if(user && !isvisitorprofile){ %> <%if(isfollowing){%>
+            <form action="/removefollow/<%= profileusername %>" method="POST">
+              <button class="btn btn-danger">UnFollow</button>
+            </form>
+            <% }else{%>
+            <form action="/addfollow/<%= profileusername %>" method="POST">
+              <button class="btn btn-primary">Follow</button>
+            </form>
+            <%}%> <%}%>
+
+            <div class="d-flex align-items-center">
+              <img
+                src="<%= profileavtar %>"
+                alt="Profile Avatar"
+                width="60"
+                class="img-fluid rounded-circle mr-2"
+              />
+              <div>
+                <p class="mb-0">
+                  Posted by
+                  <a href="#" class="font-weight-bold"
+                    ><%= profileusername %></a
+                  >
+                  <span class="text-muted">on 23/12/2001</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <div class="col-12 col-md-8 text-center">
+            <div
+              class="btn-group btn-group-sm"
+              role="group"
+              aria-label="Basic example"
+            >
+              <a
+                type="button"
+                class="btn btn-primary px-4 text-white"
+                href="/profile/<%= profileusername%>"
+                >Posts: <%=count.postcount%></a
+              >
+              <a
+                type="button"
+                class="btn btn-primary px-4 text-white"
+                href="/profile/<%= profileusername%>/followers"
+              >
+                Followers: <%=count.followerscount%>
+              </a>
+              <a
+                type="button"
+                class="btn btn-success px-4 text-white"
+                href="/profile/<%= profileusername%>/following"
+              >
+                Following: <%=count.followingcount%>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-8">
+            <div class="border border-3 border-dark shadow-sm p-3">
+              <% following.forEach(function(following) { %>
+              <a
+                href="/profile/<%= following.username%>"
+                class="text-decoration-none text-dark"
+              >
+                <div class="d-flex align-items-start mb-3">
+                  <img
+                    src="<%= following.avatar %>"
+                    alt="Avatar"
+                    width="50"
+                    class="rounded-circle mr-3"
+                  />
+                  <div>
+                    <h5 class="post-title font-weight-bold">
+                      <%= following.username %>
+                    </h5>
+                  </div>
+                </div>
+              </a>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%- include('footer') %>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/main-bundled.js"></script>
+  </body>
+</html>
