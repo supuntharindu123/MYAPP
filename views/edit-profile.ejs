@@ -23,9 +23,7 @@
       <div class="container container-narrow">
         <div class="row justify-content-center">
           <div class="col-lg-6 col-md-8 col-sm-10 mb-4">
-            <a
-              class="btn btn-outline-secondary mb-2 shadow mt-2"
-              href="/post/<%= post._id%>"
+            <a class="btn btn-outline-secondary mb-2 shadow mt-2" href=""
               >&laquo;Back To</a
             >
             <div class="form-container mt-2">
@@ -35,17 +33,13 @@
               <div class="alert alert-success text-center"><%= msg %></div>
               <% }) %>
 
-              <form
-                action="/post/<%= post._id %>/edit"
-                method="POST"
-                class="d-flex flex-column spa-form edit-post-form"
-              >
+              <form action="" method="POST" class="d-flex flex-column">
                 <label for="title" class="fw-bold text-center">Title:</label>
                 <input
                   type="text"
                   id="title"
                   name="title"
-                  value="<%= post.title %>"
+                  value="<%= user.username %>"
                   class="form-control mb-3 mt-1 shadow-sm"
                   placeholder="Enter post title"
                   required
@@ -62,7 +56,7 @@
                   placeholder="Enter post content"
                   required
                 >
-<%= post.content %></textarea
+<%= user.email %></textarea
                 >
 
                 <button

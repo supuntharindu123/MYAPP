@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>MyApp</title>
     <link rel="stylesheet" href="/style.css" type="text/css" />
     <link
       rel="stylesheet"
@@ -15,22 +15,35 @@
   <body>
     <div>
       <%- include('header') %>
-      <!-- Main Section -->
-      <div class="container-fluid background-my py-4 justify-content-center">
+
+      <div
+        class="container-fluid background-my py-4 justify-content-center container-narrow"
+      >
         <% errors.forEach(function(msg){ %>
         <div class="alert alert-danger text-center mt-2"><%= msg %></div>
         <% }) %>
 
-        <!-- Flex Container -->
         <div
           class="row d-flex justify-content-center align-content-center mt-5 pt-5"
         >
           <div
-            class="col-12 col-md-6 d-flex flex-column text-center justify-content-center align-items-center p-5 mt-5"
+            class="col-12 col-md-6 d-flex flex-column text-center justify-content-center align-items-center p-5 mt-3"
           >
-            <h1 class="welcome">Welcome,</h1>
-            <h2 class="font-weight-bold">MyApp</h2>
-            <p class="text-muted">Join us and explore amazing features!</p>
+            <h1 class="welcome text-success">Welcome,</h1>
+            <h2 class="font-weight-bold text-success">
+              To<span class="myApp">MyApp</span>
+            </h2>
+            <p class="text-muted text-success">
+              Join us and explore amazing features! Share your post with
+              other,<br />
+              follow them and chat with them. To get experience, <br />Login
+              first
+            </p>
+
+            <div class="mt-2">
+              <a class="mybtnsignin px-4 py-2 mx-3">Sign In</a>
+              <a class="mybtnsignup px-4 py-2 mx-3">Sign Up</a>
+            </div>
           </div>
 
           <div
@@ -39,7 +52,7 @@
             <form
               action="/register"
               method="POST"
-              class="w-100 rounded-lg shadow bg-white p-4"
+              class="w-75 rounded-lg shadow bg-white p-4 registation-form"
             >
               <% registerError.forEach(function(msg){ %>
               <div class="alert alert-danger text-center"><%= msg %></div>
@@ -49,9 +62,9 @@
                 <label for="username" class="font-weight-bold">Username:</label>
                 <input
                   type="text"
-                  id="username"
+                  id="username-register"
                   name="username"
-                  class="form-control"
+                  class="form-control registerusername"
                   placeholder="Enter Username"
                 />
               </div>
@@ -60,7 +73,7 @@
                 <label for="email" class="font-weight-bold">Email:</label>
                 <input
                   type="email"
-                  id="email"
+                  id="email-register"
                   name="email"
                   class="form-control"
                   placeholder="Enter Email"
@@ -71,17 +84,16 @@
                 <label for="password" class="font-weight-bold">Password:</label>
                 <input
                   type="password"
-                  id="password"
+                  id="password-register"
                   name="password"
                   class="form-control"
                   placeholder="Enter Password"
                 />
               </div>
 
-              <!-- Submit Button -->
               <button
                 type="submit"
-                class="btn btn-primary btn-block font-weight-bold"
+                class="btn btn-secondary btn-block font-weight-bold"
               >
                 Sign Up
               </button>

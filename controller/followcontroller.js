@@ -1,6 +1,7 @@
 const Follow = require("../models/Follow");
 
 exports.addFollow = function (req, res) {
+  console.log(req.visitorId);
   let follow = new Follow(req.params.username, req.visitorId);
   follow
     .create()

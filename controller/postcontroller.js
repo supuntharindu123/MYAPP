@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const Like = require("../models/Like");
 
 exports.postcreate = function (req, res) {
   res.render("create-post");
@@ -6,19 +7,44 @@ exports.postcreate = function (req, res) {
 
 exports.singlepost = async function (req, res) {
   try {
-    console.log(req.params.id);
+    const postId = req.params.id;
+
+    const loguser = req.session.user.username;
+    let like = new Like(postId, loguser);
+
     let post = await Post.findSingleById(req.params.id, req.visitorId);
-    console.log(post.title);
-    res.render("single-post", { post: post });
+
+    let posts = await Post.findByAuthorId(post.authorId);
+    let response = await like.addLikes();
+
+    res.render("single-post", { post: post, posts: posts });
   } catch {
     res.render("404");
   }
 };
 
-exports.create = function (req, res) {
-  console.log(req.session.user._id);
+exports.singlepost01 = async function (req, res) {
+  try {
+    const postId = req.params.id;
+
+    const loguser = req.session.user.username;
+    let like = new Like(postId, loguser);
+    let response = await like.disLike(postId, loguser);
+
+    let post = await Post.findSingleById(req.params.id, req.visitorId);
+
+    let posts = await Post.findByAuthorId(post.authorId);
+
+    res.render("single-post", { post: post, posts: posts });
+  } catch {
+    res.render("404");
+  }
+};
+
+exports.create = async function (req, res) {
+  console.log(`file`, req.body.filename);
   let post = new Post(req.body, req.session.user._id);
-  post
+  await post
     .create()
     .then(function (id) {
       req.flash("success", "Successfully Post created");
@@ -61,9 +87,6 @@ exports.editPost = function (req, res) {
       } else {
         req.session.save(function () {
           res.redirect(`/post/${req.params.id}/edit`);
-        });
-        req.session.save(function () {
-          res.redirect("/post/${req.params.id}/edit");
         });
       }
     })

@@ -1,17 +1,21 @@
 <% if (user) { %>
 
-<div class="w-100 bg-secondary d-flex align-items-center">
+<div class="w-100 bg-secondary d-flex align-items-center sticky-top">
   <h1 class="myApp fs-3 fw-bolder text-white p-2 ms-3">
     <a href="/" class="text-decoration-none text-white">MyApp</a>
   </h1>
 
   <div class="ml-auto d-flex align-items-center">
+    <a href="/"
+      ><i class="fa fa-home text-white mx-2 p-2 fa-2x" aria-hidden="true"></i
+    ></a>
+
     <i
-      class="searchicon fa fa-search text-white mx-3 p-2"
+      class="searchicon fa fa-search text-white mx-2 p-2 fa-2x"
       aria-hidden="true"
     ></i>
     <i
-      class="chaticon fa fa-comment-o text-white mx-3 p-2"
+      class="chaticon fa fa-comment-o text-white mx-2 p-2 fa-2x"
       aria-hidden="true"
     ></i>
 
@@ -27,35 +31,35 @@
 
     <a
       href="/create-post"
-      class="btn btn-success mx-2 px-3 py-2 d-none d-md-block"
+      class="btn btn-success mx-3 px-3 py-2 d-none d-md-block"
     >
       Create Post
     </a>
 
-    <form action="/logout" method="POST" class="m-0">
-      <button class="btn btn-danger mx-2 px-3 py-2">Sign Out</button>
+    <form action="/logout" method="POST" class="mr-4">
+      <button class="btn btn-danger mx-3 px-3 py-2">Sign Out</button>
     </form>
   </div>
 </div>
 <% } else { %>
 
 <div
-  class="w-100 bg-secondary d-flex align-items-center justify-content-between"
+  class="w-100 bg-secondary d-flex align-items-center justify-content-between sticky-top"
 >
-  <h1 class="myApp fs-3 fw-bolder text-white p-2 ms-3">MyApp</h1>
+  <h1 class="myApp fs-3 fw-bolder text-white p-2 ms-3 pointer-event">MyApp</h1>
 
   <div class="p-3">
     <form
       action="/login"
       method="POST"
-      class="d-flex flex-wrap align-items-center justify-content-end"
+      class="d-flex flex-wrap align-items-center justify-content-end mr-4"
     >
       <label for="username" class="sr-only">Username</label>
       <input
         type="text"
         name="username"
         id="username"
-        class="form-control mx-2 mb-2 mb-md-0"
+        class="form-control mx-4 mb-2 mb-md-0 loginusername"
         placeholder="Enter Username"
         style="width: 150px"
         aria-label="Enter Username"
@@ -66,13 +70,15 @@
         type="password"
         name="password"
         id="password"
-        class="form-control mx-2 mb-2 mb-md-0"
+        class="form-control mx-4 mb-2 mb-md-0"
         placeholder="Enter Password"
         style="width: 150px"
         aria-label="Enter Password"
       />
 
-      <button class="btn btn-primary px-3 py-2">Sign In</button>
+      <button class="btn btn-success px-3 py-2 font-weight-bold">
+        Sign In
+      </button>
     </form>
   </div>
 </div>

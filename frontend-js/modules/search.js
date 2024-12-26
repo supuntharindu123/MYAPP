@@ -6,8 +6,6 @@ export default class Search {
     this.backSearch = document.querySelector(".container");
 
     this.inject();
-
-    // Assign elements after injection
     this.closebtn = document.querySelector(".search-overlay-close");
     this.overlay = document.querySelector(".search-overlay");
     this.inpuField = document.querySelector(".live-search-field");
@@ -75,7 +73,7 @@ export default class Search {
       clearTimeout(this.typing);
       this.showloader();
       this.hideresultsArea();
-      this.typing = setTimeout(() => this.sendRequest(), 1000);
+      this.typing = setTimeout(() => this.sendRequest(), 500);
     }
 
     this.previous = value;
@@ -85,7 +83,6 @@ export default class Search {
     axios
       .post("/search", { searchTerm: this.inpuField.value })
       .then((response) => {
-        console.log("Response:", response.data);
         this.renderResponse(response.data);
       })
       .catch(() => {

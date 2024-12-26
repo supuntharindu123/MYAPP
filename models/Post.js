@@ -1,6 +1,7 @@
 const postDB = require("../db").db().collection("post");
 const followDB = require("../db").db().collection("follow");
 const ObjectID = require("mongodb").ObjectId;
+const e = require("connect-flash");
 const User = require("./User");
 const sanitizehtml = require("sanitize-html");
 
@@ -8,6 +9,7 @@ let Post = function (data, userId, requestedpostId) {
   this.data = data;
   this.errors = [];
   this.userId = userId;
+
   this.requestedpostId = requestedpostId;
 };
 
@@ -20,13 +22,15 @@ Post.prototype.cleanup = function () {
       allowedTags: [],
       allowedAttributes: {},
     }),
-    content: sanitizehtml(this.data.content.trim(), {
-      allowedTags: [],
+    content: sanitizehtml(this.data.content, {
+      allowedTags: ["br", "b"],
       allowedAttributes: {},
     }),
     createdDate: new Date(),
     author: new ObjectID(this.userId),
+    filename: this.data.filename,
   };
+  console.log(`data`, this.data);
 };
 
 Post.prototype.validate = function () {
@@ -35,12 +39,13 @@ Post.prototype.validate = function () {
 };
 
 Post.prototype.create = function () {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     this.cleanup();
     this.validate();
 
     if (!this.errors.length) {
-      postDB
+      console.log("Error: " + this.data.filename);
+      await postDB
         .insertOne(this.data)
         .then((info) => resolve(info.insertedId))
         .catch((err) => {
@@ -69,6 +74,12 @@ Post.ReusablePostQuery = function (
             foreignField: "_id",
             as: "authorDocument",
           },
+          // $lookup: {
+          //   from: "like",
+          //   localField: "_id",
+          //   foreignField: "PostId",
+          //   as: "postDoc",
+          // },
         },
         {
           $project: {
@@ -77,6 +88,8 @@ Post.ReusablePostQuery = function (
             createdDate: 1,
             authorId: "$author",
             author: { $arrayElemAt: ["$authorDocument", 0] },
+            like: { $arrayElemAt: ["$postDoc", 0] },
+            Likecount: "$likeCount",
           },
         },
       ])
@@ -84,30 +97,48 @@ Post.ReusablePostQuery = function (
     let posts = await postDB.aggregate(aggOperations).toArray();
 
     posts = posts.map(function (post) {
-      post.isVisitorOwner = post.authorId === visitorId;
+      post.isVisitorOwner = post.authorId.equals(visitorId);
 
-      post.authorId = undefined;
       post.author = {
         username: post.author.username || "",
         avatar: new User(post.author, true).avatar,
       };
+      // post.like = {
+      //   likedusername: post.like.LikedUser,
+      //   likepost: post.like.postId,
+      // };
       return post;
     });
+
     resolve(posts);
   });
 };
 
 Post.findSingleById = function (id, visitorId) {
   return new Promise(async (resolve, reject) => {
-    console.log("Received ID:", id);
     if (typeof id != "string" || !ObjectID.isValid(id)) {
       reject();
     }
     let posts = await Post.ReusablePostQuery(
-      [{ $match: { _id: new ObjectID(id) } }],
+      [
+        { $match: { _id: new ObjectID(id) } },
+        {
+          $lookup: {
+            from: "like",
+            localField: "_id",
+            foreignField: "PostId",
+            as: "postDoc",
+          },
+        },
+        {
+          $addFields: {
+            likeCount: { $size: "$postDoc" },
+          },
+        },
+      ],
       visitorId
     );
-    console.log(posts);
+
     if (posts.length) {
       resolve(posts[0]);
     } else {
@@ -119,6 +150,19 @@ Post.findSingleById = function (id, visitorId) {
 Post.findByAuthorId = function (authorId) {
   return Post.ReusablePostQuery([
     { $match: { author: authorId } },
+    {
+      $lookup: {
+        from: "like",
+        localField: "_id",
+        foreignField: "PostId",
+        as: "postDoc",
+      },
+    },
+    {
+      $addFields: {
+        likeCount: { $size: "$postDoc" },
+      },
+    },
     { $sort: { createdDate: -1 } },
   ]);
 };
@@ -160,7 +204,6 @@ Post.deletePost = function (deleteId, userid) {
       let post = await Post.findSingleById(deleteId, userid);
 
       if (post.isVisitorOwner) {
-        console.log(`posr`, post);
         await postDB.deleteOne({ _id: new ObjectID(deleteId) });
         resolve();
       } else {
@@ -206,9 +249,22 @@ Post.getFeed = function (id) {
     });
     let post = await Post.ReusablePostQuery([
       { $match: { author: { $in: followuser } } },
+      {
+        $lookup: {
+          from: "like",
+          localField: "_id",
+          foreignField: "PostId",
+          as: "postDoc",
+        },
+      },
+      {
+        $addFields: {
+          likeCount: { $size: "$postDoc" },
+        },
+      },
       { $sort: { createdDate: -1 } },
     ]);
-    console.log(post);
+
     resolve(post);
   });
 };

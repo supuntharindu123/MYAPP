@@ -1,0 +1,129 @@
+<div
+  class="col-12 col-md-6 text-end mt-4 mt-md-0 w-25 position-absolute aboutsection"
+>
+  <div>
+    <p>
+      <strong>Bio:</strong> Supun Tharindu Undergraduate at SLIIT | BSc IT
+      (Hons) | Specialized in Information Technology SLIIT
+    </p>
+    <p>
+      <strong>Location:</strong> Angunukolapelessa, Southern Province, Sri Lanka
+    </p>
+    <p><strong>Birth date:</strong> 2001/12/13</p>
+  </div>
+</div>
+<div class="container w-75 mx-auto d-flex flex-column align-items-center">
+  <% errors.forEach(function(msg){ %>
+  <div class="alert alert-danger text-center"><%= msg %></div>
+  <% }) %> <% success.forEach(function(msg){ %>
+  <div class="alert alert-success text-center"><%= msg %></div>
+  <% }) %>
+  <div>
+    <div class="row mb-4 mt-5">
+      <div class="col-12 col-md-8 text-center">
+        <div class="d-flex flex-row">
+          <div class="w-100">
+            <img
+              src="/cover03r.jpg"
+              class="img-fluid w-100"
+              alt="Cover Image"
+            />
+            <br />
+            <img
+              src="<%= profileavtar %>"
+              alt="Profile Avatar"
+              width="150"
+              class="img-fluid rounded-circle mr-2 float-start profilephoto"
+            />
+            <h1 class="mb-0 text-capitalize text-secondary">
+              <%= profileusername %>
+            </h1>
+            <% if(user && !isvisitorprofile){ %> <%if(isfollowing){%>
+            <form action="/removefollow/<%= profileusername %>" method="POST">
+              <button class="btn btn-success mt-3">Following</button>
+            </form>
+            <% }else{%>
+            <form action="/addfollow/<%= profileusername %>" method="POST">
+              <button class="btn btn-primary mt-3">Follow</button>
+            </form>
+            <%}%> <%}%>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="col-12 col-md-8 text-center w-100">
+        <div
+          class="btn-group btn-group-sm w-100"
+          role="group"
+          aria-label="Basic example"
+        >
+          <a
+            type="button"
+            class="btn btn-success px-4 text-white py-2 font-weight-bold"
+            href="/profile/<%= profileusername%>"
+            >Posts: <%=count.postcount%></a
+          >
+          <a
+            type="button"
+            class="btn btn-secondary px-4 text-white py-2 font-weight-bold"
+            href="/profile/<%= profileusername%>/followers"
+          >
+            Followers: <%=count.followerscount%>
+          </a>
+          <a
+            type="button"
+            class="btn btn-secondary px-4 text-white py-2 font-weight-bold"
+            href="/profile/<%= profileusername%>/following"
+          >
+            Following: <%=count.followingcount%>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-20 col-md-8">
+        <div class="p-3">
+          <% posts.forEach(function(post) { %>
+          <div
+            class="d-flex align-items-start mb-3 border border-2 border-black p-3 rounded-5 shadow"
+          >
+            <img
+              src="<%= post.author.avatar %>"
+              alt="Avatar"
+              width="45"
+              class="rounded-circle mr-3"
+            />
+            <div>
+              <p class="mt-2 text-capitalize fw-normal">
+                Post by
+                <strong class="font-weight-bold">
+                  <%= post.author.username%></strong
+                >
+              </p>
+              <a
+                href="/post/<%= post._id%>"
+                class="text-decoration-none text-dark title-link"
+              >
+                <h6 class="post-title font-weight-bold text-capitalize">
+                  <%= post.title %>
+                </h6>
+              </a>
+              <p class="mt-0"><%- filterHtml(post.content)%></p>
+
+              <p class="post-details mb-0 text-muted ms-auto my-0">
+                Posted on <%= post.createdDate ? `${post.createdDate.getMonth()
+                +
+                1}/${post.createdDate.getDate()}/${post.createdDate.getFullYear()}`
+                : "Unknown Date" %>
+              </p>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

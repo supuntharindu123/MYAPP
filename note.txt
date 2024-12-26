@@ -9,37 +9,3 @@ npm install concurrently --save-dev
 
 
 
-<div class="searcharea coloum justify-content-center align-content-center">
-                <div class="col-md-8 col-lg-6 mb-4">
-                  <div class="card shadow-sm">
-                    <div class="d-flex flex-row align-items-center p-2">
-                      <img
-                        src="https://via.placeholder.com/100"
-                        alt="post"
-                        class="img-fluid"
-                      />
-                      <div class="ml-3">
-                        <h5 class="mb-1">
-                          Example Post 01 qwertyuiqwertyu wertyujkl ertyuikj
-                        </h5>
-                        <p class="text-muted mb-0">By Supun on 2/13/2001</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-8 col-lg-6 mb-4">
-                  <div class="card shadow-sm">
-                    <div class="d-flex flex-row align-items-center p-2">
-                      <img
-                        src="https://via.placeholder.com/100"
-                        alt="post"
-                        class="img-fluid"
-                      />
-                      <div class="ml-3">
-                        <h5 class="mb-1">Example Post 02</h5>
-                        <p class="text-muted mb-0">By Supun on 2/14/2001</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>

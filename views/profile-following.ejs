@@ -19,105 +19,146 @@
   <body>
     <%- include('header') %>
 
-    <div class="background-my d-flex p-5">
-      <div class="container">
+    <div class="background-my d-flex justify-content-center">
+      <div class="container container-narrow">
         <% errors.forEach(function(msg){ %>
         <div class="alert alert-danger text-center"><%= msg %></div>
         <% }) %> <% success.forEach(function(msg){ %>
         <div class="alert alert-success text-center"><%= msg %></div>
         <% }) %>
-        <div class="row mb-4 mt-5">
-          <div class="col-12 col-md-8 text-center">
-            <% if(user && !isvisitorprofile){ %> <%if(isfollowing){%>
-            <form action="/removefollow/<%= profileusername %>" method="POST">
-              <button class="btn btn-danger">UnFollow</button>
-            </form>
-            <% }else{%>
-            <form action="/addfollow/<%= profileusername %>" method="POST">
-              <button class="btn btn-primary">Follow</button>
-            </form>
-            <%}%> <%}%>
 
-            <div class="d-flex align-items-center">
-              <img
-                src="<%= profileavtar %>"
-                alt="Profile Avatar"
-                width="60"
-                class="img-fluid rounded-circle mr-2"
-              />
-              <div>
-                <p class="mb-0">
-                  Posted by
-                  <a href="#" class="font-weight-bold"
-                    ><%= profileusername %></a
+        <div class="row">
+          <div class="col-12 col-md-9 bg-light p-4">
+            <div class="row mb-4 mt-2">
+              <div class="col-12 text-center">
+                <div class="d-flex flex-column align-items-center px-3">
+                  <img
+                    src="/cover03r.jpg"
+                    class="img-fluid w-100"
+                    alt="Cover Image"
+                  />
+                  <br />
+                  <img
+                    src="<%= profileavtar %>"
+                    alt="Profile Avatar"
+                    width="150"
+                    class="img-fluid rounded-circle mb-3 profilephoto"
+                  />
+                  <h1 class="mb-0 text-capitalize text-secondary">
+                    <%= profileusername %>
+                  </h1>
+                  <% if(user && !isvisitorprofile){ %> <%if(isfollowing){%>
+                  <form
+                    action="/removefollow/<%= profileusername %>"
+                    method="POST"
                   >
-                  <span class="text-muted">on 23/12/2001</span>
-                </p>
+                    <button class="btn btn-success mt-3">Following</button>
+                  </form>
+                  <% }else{%>
+                  <form
+                    action="/addfollow/<%= profileusername %>"
+                    method="POST"
+                  >
+                    <button
+                      class="btn btn-primary mt-3 d-flex align-items-center"
+                    >
+                      Follow
+                      <span class="ml-2">
+                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                      </span>
+                    </button>
+                  </form>
+                  <%}%> <%}%>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="mb-4 w-100 d-flex flex-column align-content-center justify-content-center"
+            >
+              <div class="col-12 col-md-12 text-center w-100">
+                <div
+                  class="btn-group btn-group-sm w-100"
+                  role="group"
+                  aria-label="Basic example"
+                >
+                  <a
+                    type="button"
+                    class="btn btn-secondary px-4 text-white py-2 font-weight-bold"
+                    href="/profile/<%= profileusername%>"
+                  >
+                    Posts: <%= count.postcount %>
+                  </a>
+                  <a
+                    type="button"
+                    class="btn btn-secondary px-4 text-white py-2 font-weight-bold"
+                    href="/profile/<%= profileusername%>/followers"
+                  >
+                    Followers: <%= count.followerscount %>
+                  </a>
+                  <a
+                    type="button"
+                    class="btn btn-success px-4 text-white py-2 font-weight-bold"
+                    href="/profile/<%= profileusername%>/following"
+                  >
+                    Following: <%= count.followingcount %>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="p-3">
+                  <% following.forEach(function(following) { %>
+                  <a
+                    href="/profile/<%= following.username%>"
+                    class="text-decoration-none text-dark"
+                  >
+                    <div class="d-flex align-items-start mb-3 shadow p-2">
+                      <img
+                        src="<%= following.avatar %>"
+                        alt="Avatar"
+                        width="40"
+                        class="rounded-circle mr-3 m-2"
+                      />
+                      <div>
+                        <h5
+                          class="post-title font-weight-bold mt-3 text-capitalize"
+                        >
+                          <%= following.username %>
+                        </h5>
+                      </div>
+                    </div>
+                  </a>
+                  <% }) %>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="mb-4">
-          <div class="col-12 col-md-8 text-center">
-            <div
-              class="btn-group btn-group-sm"
-              role="group"
-              aria-label="Basic example"
-            >
-              <a
-                type="button"
-                class="btn btn-primary px-4 text-white"
-                href="/profile/<%= profileusername%>"
-                >Posts: <%=count.postcount%></a
-              >
-              <a
-                type="button"
-                class="btn btn-primary px-4 text-white"
-                href="/profile/<%= profileusername%>/followers"
-              >
-                Followers: <%=count.followerscount%>
-              </a>
-              <a
-                type="button"
-                class="btn btn-success px-4 text-white"
-                href="/profile/<%= profileusername%>/following"
-              >
-                Following: <%=count.followingcount%>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-12 col-md-8">
-            <div class="border border-3 border-dark shadow-sm p-3">
-              <% following.forEach(function(following) { %>
-              <a
-                href="/profile/<%= following.username%>"
-                class="text-decoration-none text-dark"
-              >
-                <div class="d-flex align-items-start mb-3">
-                  <img
-                    src="<%= following.avatar %>"
-                    alt="Avatar"
-                    width="50"
-                    class="rounded-circle mr-3"
-                  />
-                  <div>
-                    <h5 class="post-title font-weight-bold">
-                      <%= following.username %>
-                    </h5>
-                  </div>
-                </div>
-              </a>
-              <% }) %>
+          <div class="col-12 col-md-3 bg-light p-4 mt-5 mt-md-0 py-5">
+            <div>
+              <br />
+              <br />
+              <br />
+              <strong>Bio:</strong>
+              <p>
+                Supun Tharindu Undergraduate at SLIIT | BSc IT (Hons) |
+                Specialized in Information Technology SLIIT
+              </p>
+              <strong>Location:</strong>
+              <p>Angunukolapelessa, Southern Province, Sri Lanka</p>
+              <strong>Birth date:</strong>
+              <p>2001/12/13</p>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <%- include('footer') %>
+
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

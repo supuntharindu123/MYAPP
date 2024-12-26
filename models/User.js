@@ -2,6 +2,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const userdb = require("../db").db().collection("users");
 const md5 = require("md5");
+const ObjectID = require("mongodb").ObjectId;
 
 let User = function (data, getAvatar) {
   this.data = data;
@@ -36,11 +37,10 @@ User.prototype.validate = async function () {
   if (this.data.username == "") {
     this.errors.push("You must provide a username");
   }
-  if (
-    this.data.username != "" &&
-    !validator.isAlphanumeric(this.data.username)
-  ) {
-    this.errors.push("username can only contain characters and numbers");
+  if (this.data.username != "" && !/^[a-zA-Z0-9 ]+$/.test(this.data.username)) {
+    this.errors.push(
+      "username can only contain characters, numbers and spaces"
+    );
   }
   if (!validator.isEmail(this.data.email)) {
     this.errors.push("You must provide a valid email address");
@@ -113,22 +113,24 @@ User.prototype.getAvatar = function () {
 };
 
 User.findByUsername = function (username) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     if (typeof username != "string") {
       reject();
       return;
     }
 
-    userdb
+    await userdb
       .findOne({ username: username })
-      .then(function (userDoc) {
+      .then((userDoc) => {
         if (userDoc) {
+          // console.log("findByUsernamehelo", username);
           userDoc = new User(userDoc, true);
           userDoc = {
             _id: userDoc.data._id,
             username: userDoc.data.username,
             avatar: userDoc.avatar,
           };
+
           resolve(userDoc);
         } else {
           reject();
@@ -138,6 +140,53 @@ User.findByUsername = function (username) {
         reject();
       });
   });
+};
+
+User.emailexist = function (email) {
+  return new Promise(async function (resolve, reject) {
+    if (typeof email !== "string") {
+      resolve(false);
+      return;
+    }
+    let user = await userdb.findOne({ email: email });
+
+    if (user) {
+      resolve(true);
+    } else {
+      resolve(false);
+    }
+  });
+};
+
+User.usernameexist = function (username) {
+  return new Promise(async function (resolve, reject) {
+    if (typeof username !== "string") {
+      resolve(false);
+      return;
+    }
+    let user = await userdb.findOne({ username: username });
+
+    if (user) {
+      resolve(true);
+    } else {
+      resolve(false);
+    }
+    console.log(`user`, user);
+  });
+};
+
+User.profiledetails = async function (id) {
+  try {
+    const user = await userdb.findOne({ _id: new ObjectID(id) });
+    if (user) {
+      return user;
+    } else {
+      return "cannot find user";
+    }
+  } catch (err) {
+    console.log("error fetching profile details", err);
+    return err;
+  }
 };
 
 module.exports = User;

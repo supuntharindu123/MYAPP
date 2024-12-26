@@ -20,44 +20,112 @@
     <div>
       <%- include('header') %>
       <div
-        class="d-flex justify-content-center h-75 align-content-center background-my"
+        class="container-fluid min-vh-100 d-flex flex-column justify-content-center align-items-center bg-light container--narrow"
       >
-        <div class="container">
+        <div class="container mt-5 container-narrow">
           <% errors.forEach(function(msg){ %>
           <div class="alert alert-danger text-center mt-2"><%= msg %></div>
           <% }) %> <% success.forEach(function(msg){ %>
           <div class="alert alert-success text-center mt-2"><%= msg %></div>
-          <% }) %>
-          <!-- post -->
-          <% if(posts.length){ posts.forEach(function(post) { %>
-          <a href="/post/<%= post._id%>" class="text-decoration-none text-dark">
-            <div class="d-flex align-items-start mb-3">
+          <% }) %> <% if(posts.length) { posts.forEach(function(post) { %>
+
+          <div
+            class="d-flex flex-column flex-md-row align-items-start mb-3 border border-2 border-dark p-3 rounded shadow"
+          >
+            <img
+              src="<%= post.author.avatar %>"
+              alt="Avatar"
+              width="60"
+              class="rounded-circle mr-3 mb-2 mb-md-0"
+            />
+            <div class="flex-grow-1">
+              <p class="text-capitalize mb-1">
+                Post by
+                <a href="/profile/<%=post.author.username%>">
+                  <strong class="font-weight-bold">
+                    <%= post.author.username %>
+                  </strong>
+                </a>
+              </p>
+              <a
+                href="/post/<%= post._id %>"
+                class="text-decoration-none text-dark"
+              >
+                <h5 class="post-title font-weight-bold text-capitalize">
+                  <%= post.title %>
+                </h5>
+              </a>
               <img
-                src="<%= post.author.avatar %>"
+                src="/social-media.jpg"
                 alt="Avatar"
-                width="50"
-                class="rounded-circle mr-3"
+                width="250"
+                class="mr-3 mb-2 mb-md-0 shadow"
               />
+              <p class="mt-2"><%- filterHtml(post.content) %></p>
+              <p class="text-muted">
+                Posted on <%= post.createdDate ? `${post.createdDate.getMonth()
+                +
+                1}/${post.createdDate.getDate()}/${post.createdDate.getFullYear()}`
+                : "Unknown Date" %>
+              </p>
+
               <div>
-                <h5 class="post-title font-weight-bold"><%= post.title %></h5>
-                <p><%= post.content%></p>
-                <p>Post by <%= post.author.username%></p>
-                <p class="post-details mb-0 text-muted">
-                  Posted on <%= post.createdDate ?
-                  `${post.createdDate.getMonth() +
-                  1}/${post.createdDate.getDate()}/${post.createdDate.getFullYear()}`
-                  : "Unknown Date" %>
-                </p>
+                <% if (post.like){%> <% if (post.like.LikedUser){%>
+                <form
+                  class="like-form spa-form"
+                  action="/post/<%=post._id%>/dislike"
+                  method="POST"
+                >
+                  <button
+                    class="likebtn border-0 bg-transparent"
+                    type="submit"
+                    data="<%=post._id%>"
+                  >
+                    <i class="fa fa-thumbs-up fa-2x" aria-hidden="true"></i>
+                    <span class="fs-6"><%=post.Likecount%></span>
+                  </button>
+                </form>
+                <% }else{%>
+                <form
+                  class="like-form spa-form"
+                  action="/post/<%=post._id%>/dislike"
+                  method="POST"
+                >
+                  <button
+                    class="likebtn border-0 bg-transparent"
+                    type="submit"
+                    data="<%=post._id%>"
+                  >
+                    <i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i>
+                    <span class="fs-6"><%=post.Likecount%></span>
+                  </button>
+                </form>
+                <% }%> <% }else{%>
+                <form
+                  class="like-form spa-form"
+                  action="/post/<%=post._id%>/like"
+                  method="POST"
+                >
+                  <button
+                    class="likebtn border-0 bg-transparent"
+                    type="submit"
+                    data="<%=post._id%>"
+                  >
+                    <i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i>
+                    <span class="fs-6"><%=post.Likecount%></span>
+                  </button>
+                </form>
+                <% }%>
               </div>
             </div>
-          </a>
-          <% })}else{%>
-          <h1 class="fs-1 fw-bolder mt-5">
+          </div>
+          <% })} else { %>
+          <h1 class="display-4 text-center mt-5">
             Welcome,
             <strong class="text-capitalize"><%= user.username %></strong>
           </h1>
-          <p>Your Feed is Empty</p>
-          <% }%>
+          <p class="text-center">Your Feed is Empty</p>
+          <% } %>
         </div>
       </div>
     </div>

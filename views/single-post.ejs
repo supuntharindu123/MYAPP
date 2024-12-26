@@ -18,21 +18,26 @@
   </head>
   <body>
     <div>
-      <!-- Header -->
       <%- include('header') %>
 
-      <!-- Main Container -->
-      <div class="container mt-5">
-        <% errors.forEach(function(msg){ %>
+      <div class="container mt-5 container-narrow">
+        <% errors.forEach(function(msg) { %>
         <div class="alert alert-danger text-center"><%= msg %></div>
-        <% }) %> <% success.forEach(function(msg){ %>
+        <% }) %> <% success.forEach(function(msg) { %>
         <div class="alert alert-success text-center"><%= msg %></div>
         <% }) %>
+
         <div class="row align-items-start">
           <div class="col-lg-8 col-md-10 col-12 mb-4">
             <div class="d-flex justify-content-between align-items-center">
-              <h1 class="h3 text-capitalize"><%= post.title %></h1>
-              <% if (post.isVisitorOwner){%>
+              <h1
+                class="h3 text-capitalize"
+                id="post-id"
+                data-id="<%= post._id %>"
+              >
+                <%= post.title %>
+              </h1>
+              <% if (post.isVisitorOwner) { %>
               <div class="btn-group">
                 <a
                   href="/post/<%= post._id %>/edit"
@@ -40,8 +45,8 @@
                 >
                   <i class="fa fa-edit mr-1"></i> Edit
                 </a>
-
                 <form
+                  class="spa-form delete-post-form"
                   action="/post/<%= post._id %>/delete"
                   method="POST"
                   onsubmit="return confirm('Are you sure you want to delete this post?');"
@@ -51,45 +56,122 @@
                   </button>
                 </form>
               </div>
-              <%}%>
+              <% } %>
             </div>
             <div class="d-flex align-items-center my-3">
               <img
                 src="<%= post.author.avatar %>"
-                alt="Social Media"
+                alt="<%= post.author.username %>'s avatar"
                 width="30"
                 class="img-fluid rounded-circle mr-2"
               />
               <p class="mb-0 small">
                 Posted by
                 <a
-                  href="/profile/<%=post.author.username%>"
+                  id="user-link"
+                  href="/profile/<%= post.author.username %>"
                   class="font-weight-bold text-capitalize"
-                  ><%= post.author.username %></a
                 >
-                on <%= post.createdDate ? `${post.createdDate.getMonth() +
+                  <%= post.author.username %>
+                </a>
+                on <% if (post.createdDate) { %> <%=
+                `${post.createdDate.getMonth() +
                 1}/${post.createdDate.getDate()}/${post.createdDate.getFullYear()}`
-                : "Unknown Date" %>
+                %> <% } else { %> Unknown Date <% } %>
               </p>
             </div>
             <div class="post-content">
               <p><%- filterHtml(post.content) %></p>
             </div>
+            <% if (post.like){%> <% if (post.like.LikedUser){%>
+            <form
+              class="like-form spa-form"
+              action="/post/<%=post._id%>/dislikes"
+              method="POST"
+            >
+              <button
+                class="likebtn border-0 bg-transparent"
+                type="submit"
+                data="<%=post._id%>"
+              >
+                <i class="fa fa-thumbs-up fa-2x" aria-hidden="true"></i>
+                <span><%=post.Likecount%></span>
+              </button>
+            </form>
+            <% }else{%>
+            <form
+              class="like-form spa-form"
+              action="/post/<%=post._id%>/dislikes"
+              method="POST"
+            >
+              <button
+                class="likebtn border-0 bg-transparent"
+                type="submit"
+                data="<%=post._id%>"
+              >
+                <i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i>
+                <span><%=post.Likecount%></span>
+              </button>
+            </form>
+            <% }%> <% }else{%>
+            <form
+              class="like-form spa-form"
+              action="/post/<%=post._id%>/likes"
+              method="POST"
+            >
+              <button
+                class="likebtn border-0 bg-transparent"
+                type="submit"
+                data="<%=post._id%>"
+              >
+                <i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i>
+                <span><%=post.Likecount%></span>
+              </button>
+            </form>
+            <% }%>
           </div>
 
-          <div class="col-lg-4 d-none d-lg-block">
+          <div class="col-lg-4 d-none d-lg-block my-3">
             <div class="p-3 border rounded bg-light">
               <h5>Related Posts</h5>
               <ul class="list-unstyled">
-                <li><a href="#">Post 1</a></li>
-                <li><a href="#">Post 2</a></li>
-                <li><a href="#">Post 3</a></li>
+                <% posts.slice(0, 3).forEach(function(relatedPost) { %>
+                <li class="mb-3">
+                  <div
+                    class="d-flex align-items-start border border-2 border-black p-3 rounded-5 shadow"
+                  >
+                    <img
+                      src="<%= relatedPost.author.avatar %>"
+                      alt="<%= relatedPost.author.username %>'s avatar"
+                      width="45"
+                      class="rounded-circle mr-3"
+                    />
+                    <div>
+                      <p class="mt-2 text-capitalize fw-normal">
+                        Post by
+                        <strong><%= relatedPost.author.username %></strong>
+                      </p>
+                      <a
+                        href="/post/<%= relatedPost._id %>"
+                        class="text-decoration-none text-dark title-link"
+                      >
+                        <h6
+                          class="post-title font-weight-bold text-capitalize text-secondary"
+                        >
+                          <%= relatedPost.title %>
+                        </h6>
+                      </a>
+                    </div>
+                  </div>
+                </li>
+                <% }) %>
               </ul>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <%- include('footer') %>
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -103,7 +185,7 @@
     ></script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      integrity="sha384-JjVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
       crossorigin="anonymous"
     ></script>
     <script src="/main-bundled.js"></script>
